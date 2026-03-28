@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Academia IronFit - Sistema de Gestão Completo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #e9ecef 0%, #d4d9e2 100%);
+            min-height: 100vh;
+            padding: 24px 20px;
+        }
+
+        /* Container principal */
+        .dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: #ffffffdd;
+            backdrop-filter: blur(1px);
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.35);
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        /* Header com identidade */
+        .header {
+            background: #0a1c2f;
+            padding: 1.2rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 4px solid #f7b32b;
+        }
+
+        .logo-area h1 {
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+            font-weight: 700;
+        }
+
+        .logo-area p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        .stats-header {
+            display: flex;
+            gap: 20px;
+            background: #0f2a3f;
+            padding: 10px 20px;
+            border-radius: 60px;
+        }
+
+        .stat-badge {
+            text-align: center;
+        }
+
+        .stat-badge span:first-child {
+            font-weight: 700;
+            font-size: 1.4rem;
+            display: block;
+        }
+
+        .stat-badge span:last-child {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        /* Navegação por tabs */
+        .tabs-nav {
+            display: flex;
+            background: white;
+            padding: 0 1.5rem;
+            gap: 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 1rem 1.8rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #2c3e66;
+            border-radius: 30px 30px 0 0;
+        }
+
+        .tab-btn i {
+            margin-right: 8px;
+        }
+
+        .tab-btn.active {
+            background: #f8fafc;
+            color: #f7b32b;
+            border-bottom: 3px solid #f7b32b;
+            font-weight: 700;
+        }
+
+        /* conteúdo das abas */
+        .tab-content {
+            display: none;
+            padding: 2rem 1.8rem;
+            background: #fefefe;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        /* cards e formulários */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-card, .list-card {
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            border: 1px solid #edf2f7;
+        }
+
+        .form-card h3, .list-card h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            color: #0f2a3f;
+            border-left: 5px solid #f7b32b;
+            padding-left: 12px;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #334155;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            background: #f9fbfd;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #f7b32b;
+            box-shadow: 0 0 0 3px rgba(247,179,43,0.2);
+        }
+
+        button {
+            background: #0f2a3f;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.85rem;
+        }
+
+        button:hover {
+            background: #f7b32b;
+            color: #0f2a3f;
+            transform: scale(0.97);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+        }
+        .btn-danger:hover {
+            background: #b91c1c;
+            color: white;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-bar input {
+            flex: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #0c4a6e;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .small-btn {
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            border-radius: 30px;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 2rem;
+            max-width: 450px;
+            width: 90%;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        /* planos extras */
+        .plan-badge {
+            background: #fef9e3;
+            color: #b45309;
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        @media (max-width: 680px) {
+            .tabs-nav { flex-wrap: wrap; justify-content: center; }
+            .tab-btn { padding: 0.7rem 1rem; font-size: 0.8rem; }
+            .card-grid { grid-template-columns: 1fr; }
+            th, td { font-size: 0.75rem; padding: 8px 4px; }
+        }
+
+        footer {
+            background: #0a1c2f;
+            text-align: center;
+            color: #94a3b8;
+            padding: 1rem;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <div class="header">
+        <div class="logo-area">
+            <h1>🏋️‍♂️ IronFit Gestão</h1>
+            <p>Controle de alunos, planos e frequência</p>
+        </div>
+        <div class="stats-header" id="globalStats">
+            <div class="stat-badge"><span id="totalAlunos">0</span><span>Alunos</span></div>
+            <div class="stat-badge"><span id="totalAtivos">0</span><span>Ativos</span></div>
+            <div class="stat-badge"><span id="freqHoje">0</span><span>Check-ins hoje</span></div>
+        </div>
+    </div>
+
+    <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="alunos">📋 Alunos & Cadastro</button>
+        <button class="tab-btn" data-tab="checkin">✅ Check-in / Frequência</button>
+        <button class="tab-btn" data-tab="relatorios">📊 Relatórios & Gestão</button>
+    </div>
+
+    <!-- ABA ALUNOS -->
+    <div id="alunos" class="tab-content active">
+        <div class="card-grid">
+            <div class="form-card">
+                <h3>➕ Novo Aluno</h3>
+                <div class="input-group">
+                    <label>Nome completo</label>
+                    <input type="text" id="nomeAluno" placeholder="Ex: Carlos Silva">
+                </div>
+                <div class="input-group">
+                    <label>E-mail</label>
+                    <input type="email" id="emailAluno" placeholder="carlos@email.com">
+                </div>
+                <div class="input-group">
+                    <label>Telefone</label>
+                    <input type="text" id="telefoneAluno" placeholder="(11) 99999-9999">
+                </div>
+                <div class="input-group">
+                    <label>Plano</label>
+                    <select id="planoAluno">
+                        <option value="Mensal">Mensal - R$129,90</option>
+                        <option value="Trimestral">Trimestral - R$349,90</option>
+                        <option value="Anual">Anual - R$1199,90</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Data de Vencimento (próxima cobrança)</label>
+                    <input type="date" id="vencimentoAluno">
+                </div>
+                <button id="btnCadastrarAluno">💪 Cadastrar Aluno</button>
+            </div>
+            <div class="list-card">
+                <h3>📌 Lista de Alunos</h3>
+                <div class="search-bar">
+                    <input type="text" id="searchAluno" placeholder="🔍 Buscar por nome ou e-mail...">
+                </div>
+                <div style="overflow-x: auto;">
+                    <table id="tabelaAlunos">
+                        <thead>
+                            <tr><th>Nome</th><th>Contato</th><th>Plano</th><th>Status</th><th>Ações</th></tr>
+                        </thead>
+                        <tbody id="listaAlunosBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABA CHECK-IN -->
+    <div id="checkin" class="tab-content">
+        <div class="card-grid">
+            <div class="form-card">
+                <h3>✅ Registrar Check-in</h3>
+                <div class="input-group">
+                    <label>Selecionar Aluno</label>
+                    <select id="selectCheckinAluno">
+                        <option value="">-- Escolha um aluno ativo --</option>
+                    </select>
+                </div>
+                <button id="btnRegistrarCheckin">Registrar Presença Agora</button>
+                <p style="margin-top: 12px; font-size: 0.7rem; color: #4b5563;">*Check-ins registrados com data/hora atual.</p>
+            </div>
+            <div class="list-card">
+                <h3>📅 Check-ins de Hoje</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead><tr><th>Aluno</th><th>Horário</th><th>Plano</th></tr></thead>
+                        <tbody id="checkinsHojeBody"></tbody>
+                    </table>
+                </div>
+                <button id="btnLimparCheckins" class="btn-secondary small-btn" style="margin-top: 12px;">Limpar todos os check-ins (demo)</button>
+            </div>
+        </div>
+        <div class="list-card" style="margin-top: 0;">
+            <h3>⏱️ Últimos Check-ins (histórico recente)</h3>
+            <table id="tabelaHistoricoCheckins">
+                <thead><tr><th>Aluno</th><th>Data/Hora</th></tr></thead>
+                <tbody id="historicoCheckinsBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ABA RELATÓRIOS -->
+    <div id="relatorios" class="tab-content">
+        <div class="card-grid">
+            <div class="form-card">
+                <h3>📈 Métricas Gerais</h3>
+                <p><strong>Total de alunos:</strong> <span id="relTotalAlunos">0</span></p>
+                <p><strong>Alunos ativos (com plano em dia):</strong> <span id="relAtivos">0</span></p>
+                <p><strong>Check-ins realizados hoje:</strong> <span id="relCheckinsHoje">0</span></p>
+                <p><strong>Faturamento mensal estimado:</strong> <span id="relFaturamento">R$ 0,00</span></p>
+                <hr style="margin: 15px 0;">
+                <h4>⚙️ Gerenciar Status</h4>
+                <button id="btnRenovarSelecionados" class="btn-secondary" style="background:#0f2a3f; color:white;">Simular renovação mensal (todos ativos)</button>
+                <button id="btnInativarInadimplentes" class="btn-secondary" style="background:#dc2626; margin-top:8px;">⚠️ Inativar vencidos (base vencimento)</button>
+            </div>
+            <div class="list-card">
+                <h3>📑 Alunos com vencimento próximo (<=7 dias)</h3>
+                <table style="width:100%">
+                    <thead><tr><th>Nome</th><th>Vencimento</th><th>Plano</th></tr></thead>
+                    <tbody id="tabelaVencimentoProximo"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <footer>IronFit Gestão — Sistema completo para academias | Dados armazenados localmente</footer>
+</div>
+
+<script>
+    // ======================== MODELO DE DADOS ========================
+    let alunos = [];
+    let checkins = [];  // array de {alunoId, nomeAluno, timestamp, dataStr, horaStr}
+
+    // Carregar dados do localStorage
+    function loadData() {
+        const storedAlunos = localStorage.getItem("ironfit_alunos");
+        const storedCheckins = localStorage.getItem("ironfit_checkins");
+        if(storedAlunos) alunos = JSON.parse(storedAlunos);
+        else {
+            // Dados iniciais de exemplo
+            alunos = [
+                { id: 1, nome: "Mariana Oliveira", email: "mariana@email.com", telefone: "(11) 98888-7777", plano: "Mensal", vencimento: "2025-05-20", status: "Ativo", dataCadastro: "2025-01-10" },
+                { id: 2, nome: "João Mendes", email: "joao@email.com", telefone: "(11) 97777-6666", plano: "Anual", vencimento: "2025-12-10", status: "Ativo", dataCadastro: "2025-02-01" },
+                { id: 3, nome: "Fernanda Lima", email: "fernanda@email.com", telefone: "(11) 95555-4444", plano: "Trimestral", vencimento: "2025-04-05", status: "Inativo", dataCadastro: "2025-01-20" }
+            ];
+        }
+        if(storedCheckins) checkins = JSON.parse(storedCheckins);
+        else {
+            checkins = [
+                { alunoId: 1, nomeAluno: "Mariana Oliveira", timestamp: new Date().setHours(8,30,0), dataStr: new Date().toLocaleDateString(), horaStr: "08:30" },
+                { alunoId: 2, nomeAluno: "João Mendes", timestamp: new Date().setHours(10,15,0), dataStr: new Date().toLocaleDateString(), horaStr: "10:15" }
+            ];
+        }
+        // garantir que checkins tenham dataStr/horaStr consistentes
+        checkins = checkins.map(c => {
+            if(!c.dataStr || !c.horaStr) {
+                let d = new Date(c.timestamp);
+                c.dataStr = d.toLocaleDateString();
+                c.horaStr = d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+            }
+            return c;
+        });
+        if(!alunos.some(a => a.id)) { let maxId = 0; alunos.forEach(a => { if(a.id > maxId) maxId = a.id; }); }
+        else {
+            let maxId = 0;
+            alunos.forEach(a => { if(a.id > maxId) maxId = a.id; });
+            if(maxId === 0) alunos.forEach((a,idx) => a.id = idx+1);
+        }
+        saveAll();
+    }
+
+    function saveAll() {
+        localStorage.setItem("ironfit_alunos", JSON.stringify(alunos));
+        localStorage.setItem("ironfit_checkins", JSON.stringify(checkins));
+    }
+
+    function updateGlobalStats() {
+        const total = alunos.length;
+        const ativos = alunos.filter(a => a.status === "Ativo").length;
+        const checkinsHoje = checkins.filter(c => c.dataStr === new Date().toLocaleDateString()).length;
+        document.getElementById("totalAlunos").innerText = total;
+        document.getElementById("totalAtivos").innerText = ativos;
+        document.getElementById("freqHoje").innerText = checkinsHoje;
+        document.getElementById("relTotalAlunos").innerText = total;
+        document.getElementById("relAtivos").innerText = ativos;
+        document.getElementById("relCheckinsHoje").innerText = checkinsHoje;
+        // faturamento mensal estimado (apenas ativos com plano)
+        let faturamento = 0;
+        alunos.forEach(a => {
+            if(a.status === "Ativo") {
+                if(a.plano === "Mensal") faturamento += 129.90;
+                else if(a.plano === "Trimestral") faturamento += 349.90 / 3;
+                else if(a.plano === "Anual") faturamento += 1199.90 / 12;
+            }
+        });
+        document.getElementById("relFaturamento").innerText = `R$ ${faturamento.toFixed(2)}`;
+    }
+
+    function renderTabelaAlunos() {
+        const searchTerm = document.getElementById("searchAluno")?.value.toLowerCase() || "";
+        let filtered = alunos.filter(a => a.nome.toLowerCase().includes(searchTerm) || a.email.toLowerCase().includes(searchTerm));
+        const tbody = document.getElementById("listaAlunosBody");
+        tbody.innerHTML = "";
+        filtered.forEach(aluno => {
+            const row = tbody.insertRow();
+            row.insertCell(0).innerText = aluno.nome;
+            row.insertCell(1).innerHTML = `${aluno.email}<br><small>${aluno.telefone}</small>`;
+            row.insertCell(2).innerHTML = `<span class="plan-badge">${aluno.plano}</span>`;
+            row.insertCell(3).innerHTML = aluno.status === "Ativo" ? "✅ Ativo" : "❌ Inativo";
+            const acoes = row.insertCell(4);
+            acoes.className = "action-buttons";
+            const toggleBtn = document.createElement("button");
+            toggleBtn.innerText = aluno.status === "Ativo" ? "Inativar" : "Ativar";
+            toggleBtn.classList.add("small-btn");
+            toggleBtn.style.background = aluno.status === "Ativo" ? "#dc2626" : "#16a34a";
+            toggleBtn.onclick = () => toggleStatusAluno(aluno.id);
+            const editBtn = document.createElement("button");
+            editBtn.innerText = "Editar";
+            editBtn.classList.add("small-btn");
+            editBtn.style.background = "#f7b32b";
+            editBtn.onclick = () => editarAluno(aluno.id);
+            acoes.appendChild(toggleBtn);
+            acoes.appendChild(editBtn);
+        });
+        updateGlobalStats();
+    }
+
+    function toggleStatusAluno(id) {
+        const aluno = alunos.find(a => a.id === id);
+        if(aluno) {
+            aluno.status = aluno.status === "Ativo" ? "Inativo" : "Ativo";
+            saveAll();
+            renderTabelaAlunos();
+            renderSelectCheckin();
+            renderVencimentoProximo();
+            updateGlobalStats();
+        }
+    }
+
+    function editarAluno(id) {
+        const aluno = alunos.find(a => a.id === id);
+        if(!aluno) return;
+        const novoNome = prompt("Editar nome:", aluno.nome);
+        if(novoNome && novoNome.trim()) aluno.nome = novoNome.trim();
+        const novoEmail = prompt("Editar e-mail:", aluno.email);
+        if(novoEmail !== null) aluno.email = novoEmail;
+        const novoTelefone = prompt("Editar telefone:", aluno.telefone);
+        if(novoTelefone !== null) aluno.telefone = novoTelefone;
+        const novoPlano = prompt("Editar plano (Mensal, Trimestral, Anual):", aluno.plano);
+        if(novoPlano && (novoPlano === "Mensal" || novoPlano === "Trimestral" || novoPlano === "Anual")) aluno.plano = novoPlano;
+        const novaData = prompt("Editar vencimento (AAAA-MM-DD):", aluno.vencimento);
+        if(novaData && novaData.match(/^\d{4}-\d{2}-\d{2}$/)) aluno.vencimento = novaData;
+        saveAll();
+        renderTabelaAlunos();
+        renderSelectCheckin();
+        renderVencimentoProximo();
+        updateGlobalStats();
+    }
+
+    function cadastrarAluno() {
+        const nome = document.getElementById("nomeAluno").value.trim();
+        const email = document.getElementById("emailAluno").value.trim();
+        const telefone = document.getElementById("telefoneAluno").value.trim();
+        const plano = document.getElementById("planoAluno").value;
+        let vencimento = document.getElementById("vencimentoAluno").value;
+        if(!nome) { alert("Nome é obrigatório"); return; }
+        if(!email) { alert("Email é obrigatório"); return; }
+        if(!vencimento) {
+            const hoje = new Date();
+            hoje.setDate(hoje.getDate() + 30);
+            vencimento = hoje.toISOString().split('T')[0];
+        }
+        const newId = alunos.length > 0 ? Math.max(...alunos.map(a=>a.id)) + 1 : 1;
+        const novoAluno = {
+            id: newId,
+            nome: nome,
+            email: email,
+            telefone: telefone || "Não informado",
+            plano: plano,
+            vencimento: vencimento,
+            status: "Ativo",
+            dataCadastro: new Date().toISOString().split('T')[0]
+        };
+        alunos.push(novoAluno);
+        saveAll();
+        renderTabelaAlunos();
+        renderSelectCheckin();
+        renderVencimentoProximo();
+        updateGlobalStats();
+        document.getElementById("nomeAluno").value = "";
+        document.getElementById("emailAluno").value = "";
+        document.getElementById("telefoneAluno").value = "";
+        document.getElementById("vencimentoAluno").value = "";
+        alert(`Aluno ${nome} cadastrado com sucesso!`);
+    }
+
+    function renderSelectCheckin() {
+        const select = document.getElementById("selectCheckinAluno");
+        if(!select) return;
+        const ativos = alunos.filter(a => a.status === "Ativo");
+        select.innerHTML = '<option value="">-- Escolha um aluno ativo --</option>';
+        ativos.forEach(aluno => {
+            const option = document.createElement("option");
+            option.value = aluno.id;
+            option.innerText = `${aluno.nome} (${aluno.plano})`;
+            select.appendChild(option);
+        });
+    }
+
+    function registrarCheckin() {
+        const select = document.getElementById("selectCheckinAluno");
+        const alunoId = parseInt(select.value);
+        if(!alunoId) { alert("Selecione um aluno ativo!"); return; }
+        const aluno = alunos.find(a => a.id === alunoId);
+        if(!aluno || aluno.status !== "Ativo") { alert("Aluno inativo ou não encontrado!"); return; }
+        const agora = new Date();
+        const dataStr = agora.toLocaleDateString();
+        const horaStr = agora.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        const jaCheckinHoje = checkins.some(c => c.alunoId === alunoId && c.dataStr === dataStr);
+        if(jaCheckinHoje) {
+            alert(`Aluno ${aluno.nome} já realizou check-in hoje!`);
+            return;
+        }
+        const novoCheckin = {
+            alunoId: aluno.id,
+            nomeAluno: aluno.nome,
+            timestamp: agora.getTime(),
+            dataStr: dataStr,
+            horaStr: horaStr
+        };
+        checkins.unshift(novoCheckin);
+        saveAll();
+        renderCheckinsHoje();
+        renderHistoricoCheckins();
+        updateGlobalStats();
+        alert(`Check-in de ${aluno.nome} registrado às ${horaStr}`);
+    }
+
+    function renderCheckinsHoje() {
+        const hoje = new Date().toLocaleDateString();
+        const checkinsHoje = checkins.filter(c => c.dataStr === hoje);
+        const tbody = document.getElementById("checkinsHojeBody");
+        tbody.innerHTML = "";
+        checkinsHoje.forEach(c => {
+            const row = tbody.insertRow();
+            row.insertCell(0).innerText = c.nomeAluno;
+            row.insertCell(1).innerText = c.horaStr;
+            row.insertCell(2).innerText = alunos.find(a=>a.id === c.alunoId)?.plano || "-";
+        });
+        if(checkinsHoje.length === 0) tbody.innerHTML = '<tr><td colspan="3">Nenhum check-in hoje</td></tr>';
+        updateGlobalStats();
+    }
+
+    function renderHistoricoCheckins() {
+        const tbody = document.getElementById("historicoCheckinsBody");
+        tbody.innerHTML = "";
+        const ultimos = checkins.slice(0, 15);
+        ultimos.forEach(c => {
+            const row = tbody.insertRow();
+            row.insertCell(0).innerText = c.nomeAluno;
+            row.insertCell(1).innerText = `${c.dataStr} às ${c.horaStr}`;
+        });
+        if(ultimos.length === 0) tbody.innerHTML = '<tr><td colspan="2">Nenhum registro</td></tr>';
+    }
+
+    function renderVencimentoProximo() {
+        const hoje = new Date();
+        hoje.setHours(0,0,0,0);
+        const limite = new Date(hoje);
+        limite.setDate(hoje.getDate() + 7);
+        const proximos = alunos.filter(a => {
+            if(!a.vencimento) return false;
+            const venc = new Date(a.vencimento);
+            return venc >= hoje && venc <= limite && a.status === "Ativo";
+        });
+        const tbody = document.getElementById("tabelaVencimentoProximo");
+        tbody.innerHTML = "";
+        proximos.forEach(a => {
+            const row = tbody.insertRow();
+            row.insertCell(0).innerText = a.nome;
+            row.insertCell(1).innerText = new Date(a.vencimento).toLocaleDateString();
+            row.insertCell(2).innerText = a.plano;
+        });
+        if(proximos.length === 0) tbody.innerHTML = '<tr><td colspan="3">Nenhum vencimento próximo</td></tr>';
+    }
+
+    function limparCheckinsHoje() {
+        const hoje = new Date().toLocaleDateString();
+        checkins = checkins.filter(c => c.dataStr !== hoje);
+        saveAll();
+        renderCheckinsHoje();
+        renderHistoricoCheckins();
+        updateGlobalStats();
+        alert("Check-ins de hoje removidos (apenas visual demo)");
+    }
+
+    function renovarMensalAtivos() {
+        alunos.forEach(a => {
+            if(a.status === "Ativo") {
+                let hoje = new Date();
+                if(a.plano === "Mensal") hoje.setDate(hoje.getDate() + 30);
+                else if(a.plano === "Trimestral") hoje.setMonth(hoje.getMonth() + 3);
+                else if(a.plano === "Anual") hoje.setFullYear(hoje.getFullYear() + 1);
+                a.vencimento = hoje.toISOString().split('T')[0];
+            }
+        });
+        saveAll();
+        renderTabelaAlunos();
+        renderVencimentoProximo();
+        alert("Renovação simulada: todos os ativos tiveram vencimento estendido!");
+    }
+
+    function inativarVencidos() {
+        const hoje = new Date();
+        hoje.setHours(0,0,0,0);
+        let alterados = 0;
+        alunos.forEach(a => {
+            if(a.status === "Ativo" && a.vencimento) {
+                const venc = new Date(a.vencimento);
+                if(venc < hoje) {
+                    a.status = "Inativo";
+                    alterados++;
+                }
+            }
+        });
+        if(alterados) {
+            saveAll();
+            renderTabelaAlunos();
+            renderSelectCheckin();
+            renderVencimentoProximo();
+            updateGlobalStats();
+            alert(`${alterados} alunos inativados por vencimento.`);
+        } else {
+            alert("Nenhum aluno com vencimento expirado.");
+        }
+    }
+
+    // TABS
+    function initTabs() {
+        const btns = document.querySelectorAll(".tab-btn");
+        const contents = document.querySelectorAll(".tab-content");
+        btns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const tabId = btn.getAttribute("data-tab");
+                btns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                contents.forEach(c => c.classList.remove("active"));
+                document.getElementById(tabId).classList.add("active");
+                if(tabId === "alunos") renderTabelaAlunos();
+                if(tabId === "checkin") { renderCheckinsHoje(); renderHistoricoCheckins(); renderSelectCheckin(); }
+                if(tabId === "relatorios") { updateGlobalStats(); renderVencimentoProximo(); }
+            });
+        });
+    }
+
+    // Event listeners
+    document.getElementById("btnCadastrarAluno")?.addEventListener("click", cadastrarAluno);
+    document.getElementById("btnRegistrarCheckin")?.addEventListener("click", registrarCheckin);
+    document.getElementById("btnLimparCheckins")?.addEventListener("click", limparCheckinsHoje);
+    document.getElementById("btnRenovarSelecionados")?.addEventListener("click", renovarMensalAtivos);
+    document.getElementById("btnInativarInadimplentes")?.addEventListener("click", inativarVencidos);
+    document.getElementById("searchAluno")?.addEventListener("input", () => renderTabelaAlunos());
+
+    function init() {
+        loadData();
+        renderTabelaAlunos();
+        renderSelectCheckin();
+        renderCheckinsHoje();
+        renderHistoricoCheckins();
+        renderVencimentoProximo();
+        updateGlobalStats();
+        initTabs();
+    }
+    init();
+</script>
+</body>
+</html>
